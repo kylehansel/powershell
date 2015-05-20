@@ -1,0 +1,75 @@
+####################################################################
+#
+# Kyle Hansel 
+# kylehansel@gmail.com, kyle.hansel@orecity.k12.or.us
+# Oregon City School District Student Account Automation
+# V 0.1
+# Date : 27/04/2015
+# 
+# This script is designed to automate the student creation process
+# in AD using an exported CSV from the ESD.
+#
+####################################################################
+
+# declare hash table with School ID to School Name mapping
+$schoolIdsToNames = @{
+  "105" = "Beavercreek";
+  "106" = "Candy Lane";
+  "107" = "Holcomb";
+  "109" = "Gaffney Lane";
+  "110" = "Jennings Lodge";
+  "114" = "John McLoughlin";
+  "115" = "Gardiner";
+  "116" = "Ogden";
+  "118" = "OCHS";
+  "139" = "Redland";
+  "2735" = "OCSLA";
+  "4480" = "Springwater";
+  "4585" = "ACA";
+  "4802" = "CAIS";
+  "9205" = "Outside Placement"
+}
+
+# declare hash table with GradeLevel to GraduationYear mapping 
+#$gradeToGradyear = @{
+#  "KA" = "2027";
+#  "01" = "2026";
+#  "02" = "2025";
+#  "03" = "2024";
+#  "04" = "2023";
+#  "05" = "2022";
+#  "06" = "2021";
+#  "07" = "2020";
+#  "08" = "2019";
+#  "09" = "2018";
+#  "10" = "2017";
+#  "11" = "2016";
+#  "12" = "2015"  
+#}
+
+# Imports CSV and and selects rows of data that will be used for account creation
+$csv=Import-Csv C:\Users\KHANSEL-LT\Documents\destiny_patron-OCSD_stu.csv|
+select-object -property SiteShortName,DistrictID,LastName,MiddleName,FirstName,GradeLevel,GraduationYear
+
+
+# for each row, replace the SiteShortName field with the School Name
+foreach($row in $csv) 
+{
+    $row.SiteShortName = $schoolIdsToNames[$row.SiteShortName];
+}
+
+# for each row, replace the GraduationYear field with the GraduationYear based on GradeLevel
+
+        if ($row.GradeLevel = 12){$row.GraduationYear = 2015}
+    elseif ($row.GradeLevel = 11){$row.GraduationYear = 2016}
+    elseif ($row.GradeLevel = 10){$row.GraduationYear = 2017}
+    elseif ($row.GradeLevel = 09){$row.GraduationYear = 2018}
+    elseif ($row.GradeLevel = 08){$row.GraduationYear = 2019}
+    elseif ($row.GradeLevel = 07){$row.GraduationYear = 2020}
+    elseif ($row.GradeLevel = 06){$row.GraduationYear = 2021}
+    elseif ($row.GradeLevel = 05){$row.GraduationYear = 2022}
+    elseif ($row.GradeLevel = 04){$row.GraduationYear = 2023}
+    elseif ($row.GradeLevel = 03){$row.GraduationYear = 2024}
+    elseif ($row.GradeLevel = 02){$row.GraduationYear = 2025}
+    elseif ($row.GradeLevel = 01){$row.GraduationYear = 2026}
+    elseif ($row.GradeLevel = KA){$row.GraduationYear = 2027}
